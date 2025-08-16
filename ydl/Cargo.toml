@@ -1,0 +1,49 @@
+[package]
+name = "ydl"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "A fast, reliable YouTube subtitle downloader library written in Rust"
+documentation = "https://docs.rs/ydl"
+categories = ["multimedia", "api-bindings"]
+keywords = ["youtube", "subtitles", "captions", "download", "video"]
+
+[dependencies]
+# HTTP Client and Async Runtime
+tokio = { workspace = true, features = ["rt", "rt-multi-thread", "macros"] }
+reqwest = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# URL Processing and Validation
+url = { workspace = true }
+regex = { workspace = true }
+
+# File I/O and Encoding
+encoding_rs = { workspace = true }
+tempfile = { workspace = true }
+
+# Error Handling and Logging
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+
+[dev-dependencies]
+mockito = "1.7"
+proptest = "1.4"
+tokio-test = "0.4"
+criterion = "0.7"
+tracing-subscriber = { workspace = true }
+
+[lib]
+name = "ydl"
+crate-type = ["lib"]
+
+[[example]]
+name = "basic_download"
+path = "../examples/basic_download.rs"

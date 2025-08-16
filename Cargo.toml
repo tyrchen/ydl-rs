@@ -1,0 +1,48 @@
+[workspace]
+members = ["ydl", "ydl-cli"]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+authors = ["Tyr Chen <tyr.chen@gmail.com>"]
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/tyrchen/ydl-rs"
+homepage = "https://github.com/tyrchen/ydl-rs"
+
+[workspace.dependencies]
+# HTTP Client and Async Runtime
+tokio = { version = "1.47.1", features = ["full"] }
+reqwest = { version = "0.12", default-features = false, features = [
+  "json",
+  "stream",
+  "rustls-tls",
+] }
+
+# CLI and Configuration
+clap = { version = "4.0", features = ["derive"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.142"
+
+# URL Processing and Validation
+url = "2.4"
+regex = "1.9"
+
+# File I/O and Encoding
+encoding_rs = "0.8"
+tempfile = "3.7"
+
+# Error Handling and Logging
+anyhow = "1.0.99"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# OpenAI Integration
+async-openai = "0.29"
+
+[workspace.dev-dependencies]
+mockito = "1.7"
+assert_cmd = "2.0"
+criterion = "0.7"
+proptest = "1.4"

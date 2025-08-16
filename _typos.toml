@@ -1,0 +1,5 @@
+[default.extend-words]
+slq = "slq"
+
+[files]
+extend-exclude = ["CHANGELOG.md", "notebooks/*"]

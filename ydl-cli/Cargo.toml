@@ -1,0 +1,42 @@
+[package]
+name = "ydl-cli"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Command-line interface for the ydl YouTube subtitle downloader"
+categories = ["command-line-utilities", "multimedia"]
+keywords = ["youtube", "subtitles", "captions", "download", "cli"]
+
+[[bin]]
+name = "ydl"
+path = "src/main.rs"
+
+[dependencies]
+# Local dependencies
+ydl = { path = "../ydl" }
+
+# CLI and Configuration
+clap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Async Runtime
+tokio = { workspace = true, features = ["fs"] }
+
+# File I/O
+tempfile = { workspace = true }
+
+# Error Handling and Logging
+anyhow = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# OpenAI Integration for blog generation
+async-openai = { workspace = true }
+
+[dev-dependencies]
+assert_cmd = "2.0"
+tempfile = "3.7"
