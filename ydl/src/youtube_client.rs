@@ -37,6 +37,7 @@ impl ClientType {
         }
     }
 
+    // These API keys are public and can be found in: https://github.com/zerodytrash/YouTube-Internal-Clients/tree/main?tab=readme-ov-file#api-keys
     fn api_key(&self) -> &str {
         match self {
             ClientType::Web => "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8",
