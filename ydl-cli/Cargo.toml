@@ -16,7 +16,7 @@ path = "src/main.rs"
 
 [dependencies]
 # Local dependencies
-ydl = { path = "../ydl" }
+ydl-lib = { path = "../ydl", version = "0.1.0" }
 
 # CLI and Configuration
 clap = { workspace = true }

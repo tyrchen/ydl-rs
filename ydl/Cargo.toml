@@ -1,5 +1,5 @@
 [package]
-name = "ydl"
+name = "ydl-lib"
 version.workspace = true
 authors.workspace = true
 edition.workspace = true
@@ -7,7 +7,7 @@ license.workspace = true
 repository.workspace = true
 homepage.workspace = true
 description = "A fast, reliable YouTube subtitle downloader library written in Rust"
-documentation = "https://docs.rs/ydl"
+documentation = "https://docs.rs/ydl-lib"
 categories = ["multimedia", "api-bindings"]
 keywords = ["youtube", "subtitles", "captions", "download", "video"]
 
@@ -43,7 +43,3 @@ tracing-subscriber = { workspace = true }
 [lib]
 name = "ydl"
 crate-type = ["lib"]
-
-[[example]]
-name = "basic_download"
-path = "../examples/basic_download.rs"
