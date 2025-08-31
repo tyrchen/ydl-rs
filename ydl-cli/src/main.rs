@@ -1,5 +1,5 @@
 use clap::{Parser, ValueEnum};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tokio::fs;
 use tracing::{debug, info};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -199,12 +199,45 @@ async fn generate_blog(downloader: &Ydl, cli: &Cli) -> YdlResult<()> {
         downloader.video_id()
     );
 
-    // First download the subtitles as text
-    let subtitle_content = match downloader.subtitle_with_retry(SubtitleType::Txt).await {
-        Ok(content) => content,
-        Err(e) => {
-            handle_download_error(&e);
-            std::process::exit(1);
+    // Try to read existing plain text file first, otherwise download
+    let subtitle_content = {
+        // Determine what the text file path would be
+        let text_path = determine_output_path(downloader, SubtitleType::Txt, cli).await?;
+
+        if text_path.exists() {
+            println!("Using existing plain text file: {}", text_path.display());
+            match fs::read_to_string(&text_path).await {
+                Ok(content) => content,
+                Err(_) => {
+                    // If we can't read the file, download fresh
+                    println!("Could not read existing file, downloading fresh subtitles...");
+                    match downloader.subtitle_with_retry(SubtitleType::Txt).await {
+                        Ok(content) => content,
+                        Err(e) => {
+                            handle_download_error(&e);
+                            std::process::exit(1);
+                        }
+                    }
+                }
+            }
+        } else {
+            // No existing file, download the subtitles as text
+            println!("Downloading subtitles as plain text...");
+            match downloader.subtitle_with_retry(SubtitleType::Txt).await {
+                Ok(content) => {
+                    // Save the text file for future reference
+                    if let Err(e) = write_subtitle_file(&text_path, &content, cli.force).await {
+                        eprintln!("Warning: Could not save text file: {}", e);
+                    } else {
+                        println!("Saved plain text to: {}", text_path.display());
+                    }
+                    content
+                }
+                Err(e) => {
+                    handle_download_error(&e);
+                    std::process::exit(1);
+                }
+            }
         }
     };
 
@@ -382,6 +415,11 @@ async fn download_single_format(
                 content.len(),
                 format
             );
+
+            // If we downloaded SRT format, also save a plain text version
+            if format == SubtitleType::Srt {
+                save_plain_text_version(downloader, &output_path, cli).await?;
+            }
         }
         Err(e) => {
             handle_download_error(&e);
@@ -423,6 +461,11 @@ async fn download_multiple_formats(
                     result.format,
                     result.language
                 );
+
+                // If we downloaded SRT format, also save a plain text version
+                if result.format == SubtitleType::Srt {
+                    save_plain_text_version(downloader, &output_path, cli).await?;
+                }
             }
 
             println!(
@@ -433,6 +476,32 @@ async fn download_multiple_formats(
         Err(e) => {
             handle_download_error(&e);
             std::process::exit(1);
+        }
+    }
+
+    Ok(())
+}
+
+/// Save a plain text version of the subtitles (for SRT files)
+async fn save_plain_text_version(downloader: &Ydl, srt_path: &Path, cli: &Cli) -> YdlResult<()> {
+    // Download the subtitles as plain text
+    match downloader.subtitle_with_retry(SubtitleType::Txt).await {
+        Ok(text_content) => {
+            // Create the text file path by replacing the extension
+            let text_path = srt_path.with_extension("txt");
+
+            // Write the plain text file
+            write_subtitle_file(&text_path, &text_content, cli.force).await?;
+
+            println!("Also saved plain text to: {}", text_path.display());
+            info!(
+                "Saved {} characters of plain text content",
+                text_content.len()
+            );
+        }
+        Err(e) => {
+            // Log warning but don't fail the main operation
+            eprintln!("Warning: Could not save plain text version: {}", e);
         }
     }
 
@@ -514,10 +583,10 @@ async fn write_subtitle_file(path: &PathBuf, content: &str, force: bool) -> YdlR
     }
 
     // Create parent directories if needed
-    if let Some(parent) = path.parent() {
-        if !parent.exists() {
-            fs::create_dir_all(parent).await?;
-        }
+    if let Some(parent) = path.parent()
+        && !parent.exists()
+    {
+        fs::create_dir_all(parent).await?;
     }
 
     // Write the file
@@ -543,10 +612,10 @@ async fn write_blog_file(path: &PathBuf, content: &str, force: bool) -> YdlResul
     }
 
     // Create parent directories if needed
-    if let Some(parent) = path.parent() {
-        if !parent.exists() {
-            fs::create_dir_all(parent).await?;
-        }
+    if let Some(parent) = path.parent()
+        && !parent.exists()
+    {
+        fs::create_dir_all(parent).await?;
     }
 
     // Write the file

@@ -237,7 +237,7 @@ impl ContentProcessor {
             })?;
 
         let s_regex =
-            Regex::new(r#"<s[^>]*>([^<]*)</s>"#).map_err(|e| YdlError::SubtitleParsing {
+            Regex::new(r"<s[^>]*>([^<]*)</s>").map_err(|e| YdlError::SubtitleParsing {
                 message: format!("Invalid s tag regex: {}", e),
             })?;
 
@@ -382,7 +382,7 @@ impl ContentProcessor {
             })?;
 
         Ok(Duration::from_millis(
-            hours * 3600000 + minutes * 60000 + seconds * 1000 + millis,
+            hours * 3_600_000 + minutes * 60_000 + seconds * 1000 + millis,
         ))
     }
 
@@ -426,7 +426,7 @@ impl ContentProcessor {
             })?;
 
         Ok(Duration::from_millis(
-            hours * 3600000 + minutes * 60000 + seconds * 1000 + millis,
+            hours * 3_600_000 + minutes * 60_000 + seconds * 1000 + millis,
         ))
     }
 
@@ -612,14 +612,14 @@ mod tests {
     #[test]
     fn test_parse_srt_content() {
         let processor = test_processor();
-        let srt_content = r#"1
+        let srt_content = r"1
 00:00:01,000 --> 00:00:03,000
 Hello, world!
 
 2
 00:00:04,000 --> 00:00:06,000
 This is a test.
-"#;
+";
 
         let result = processor.parse_srt_content(srt_content, "en");
         assert!(result.is_ok());
@@ -633,14 +633,14 @@ This is a test.
     #[test]
     fn test_parse_vtt_content() {
         let processor = test_processor();
-        let vtt_content = r#"WEBVTT
+        let vtt_content = r"WEBVTT
 
 00:00:01.000 --> 00:00:03.000
 Hello, world!
 
 00:00:04.000 --> 00:00:06.000
 This is a test.
-"#;
+";
 
         let result = processor.parse_vtt_content(vtt_content, "en");
         assert!(result.is_ok());

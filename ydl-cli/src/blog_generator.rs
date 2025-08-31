@@ -1,11 +1,11 @@
 use async_openai::{
+    Client,
     config::OpenAIConfig,
     types::{
         ChatCompletionRequestMessage, ChatCompletionRequestSystemMessage,
         ChatCompletionRequestSystemMessageContent, ChatCompletionRequestUserMessage,
         ChatCompletionRequestUserMessageContent, CreateChatCompletionRequest,
     },
-    Client,
 };
 use std::env;
 use tracing::{debug, info};

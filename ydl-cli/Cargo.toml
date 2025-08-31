@@ -16,7 +16,7 @@ path = "src/main.rs"
 
 [dependencies]
 # Local dependencies
-ydl-lib = { path = "../ydl", version = "0.1.0" }
+ydl-lib = { path = "../ydl", version = "0.2.0" }
 
 # CLI and Configuration
 clap = { workspace = true }
@@ -39,4 +39,4 @@ async-openai = { workspace = true }
 
 [dev-dependencies]
 assert_cmd = "2.0"
-tempfile = "3.7"
+tempfile = "3.21"

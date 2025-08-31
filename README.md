@@ -15,6 +15,7 @@ A fast, reliable YouTube subtitle downloader library and CLI tool written in Rus
 - 🎯 Automatic subtitle track selection
 - 🔄 Retry logic with exponential backoff for reliability
 - 📖 Blog post generation from video transcripts (using OpenAI)
+- 📄 Automatic plain text extraction when downloading SRT files
 - 🛠️ Both library and CLI interfaces
 
 ## Installation
@@ -44,6 +45,7 @@ cargo install ydl-cli
 
 ```bash
 # Download subtitles in SRT format (default)
+# Note: When downloading SRT, a plain text file is also automatically saved
 ydl https://www.youtube.com/watch?v=VIDEO_ID
 
 # Download subtitles in VTT format
@@ -59,6 +61,8 @@ ydl https://www.youtube.com/watch?v=VIDEO_ID --output my_subtitles.srt
 ydl https://www.youtube.com/watch?v=VIDEO_ID --output-dir ./subtitles/
 ```
 
+> **Note**: When downloading SRT format subtitles, a plain text file (`.txt`) containing only the subtitle content (without timestamps) is automatically saved alongside the SRT file. This text file is used for blog generation and can be referenced for other purposes.
+
 #### Other operations
 
 ```bash
@@ -69,6 +73,7 @@ ydl https://www.youtube.com/watch?v=VIDEO_ID --list
 ydl https://www.youtube.com/watch?v=VIDEO_ID --info
 
 # Generate a blog post from video transcript (requires OpenAI API key)
+# This will use the existing .txt file if available, or download fresh subtitles
 ydl https://www.youtube.com/watch?v=VIDEO_ID --generate-blog
 
 # Enable verbose logging

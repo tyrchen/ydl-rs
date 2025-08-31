@@ -35,7 +35,7 @@ tracing = { workspace = true }
 
 [dev-dependencies]
 mockito = "1.7"
-proptest = "1.4"
+proptest = "1.7"
 tokio-test = "0.4"
 criterion = "0.7"
 tracing-subscriber = { workspace = true }
