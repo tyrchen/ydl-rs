@@ -12,7 +12,7 @@ release:
 	@cargo release push --execute
 
 publish:
-	@cargo publish -p ydl
+	@cargo publish -p ydl-lib
 	@cargo publish -p ydl-cli
 
 update-submodule:
